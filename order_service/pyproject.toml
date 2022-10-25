@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "order_service"
+version = "0.1.0"
+description = ""
+authors = ["Volodina Elena <elena.volodina@zyfra.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.79.1"
+uvicorn = "^0.18.2"
+alembic = "^1.8.1"
+pydantic = {version = "^1.9.2", extras = ["email"]}
+asyncpg = "^0.26.0"
+SQLAlchemy = {version = "^1.4.40", extras = ["asyncio"]}
+psycopg2-binary = "^2.9.3"
+Jinja2 = "^3.1.2"
+python-multipart = "^0.0.5"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

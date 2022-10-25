@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hw_6_chart.fullname" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "hw_6_chart.selectorLabels" . | nindent 6 }}
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        {{- include "hw_6_chart.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:            
+        - image: {{ .Values.image_user_service.repository }}
+          name: {{ .Chart.Name }}
+          ports:
+            - containerPort: 8000
+          imagePullPolicy: Always
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: volodina-hw2-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: volodina-hw2-secret
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: volodina-hw2-secret
+                  key: DB_NAME
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: volodina-hw2-secret
+                  key: DB_HOST
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      initContainers:
+        - name: migrate
+          image: {{ .Values.image_user_service.repository }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - "-c"
+            - cd app && alembic upgrade head
+          env:
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: volodina-hw2-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: volodina-hw2-secret
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: volodina-hw2-secret
+                  key: DB_NAME
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: volodina-hw2-secret
+                  key: DB_HOST
