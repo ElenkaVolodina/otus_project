@@ -11,7 +11,13 @@ class PikaClient:
     def __init__(self, process_callable):
         self.publish_queue_name = os.getenv('PUBLISH_QUEUE', 'order_queue')
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=os.getenv('RABBIT_HOST', '127.0.0.1'))
+            pika.ConnectionParameters(
+                host=os.getenv('RABBIT_HOST', '127.0.0.1'),
+                credentials=pika.credentials.PlainCredentials(
+                'admin', 'admin'
+                ),
+                heartbeat=0,
+            )
         )
         self.channel = self.connection.channel()
         self.publish_queue = self.channel.queue_declare(queue=self.publish_queue_name)
@@ -23,6 +29,8 @@ class PikaClient:
         """Setup message listener with the current running loop"""
         connection = await connect_robust(
             host=os.getenv('RABBIT_HOST', '127.0.0.1'),
+            login='admin',
+            password='admin',
             port=5672,
             loop=loop,
         )
@@ -47,5 +55,5 @@ class PikaClient:
         self.channel.basic_publish(
             exchange='my_orders',
             routing_key=self.publish_queue_name,
-            body=json.dumps(message).encode()
-    )
+            body=json.dumps(message).encode(),
+        )

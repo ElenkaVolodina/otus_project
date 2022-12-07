@@ -9,6 +9,7 @@ from app.rm_client import PikaClient
 
 async def log_incoming_message(message: dict):
     """Method to do something meaningful with the incoming message"""
+    print(message)
     order_id = message.get('order_id')
     status = message.get('status')
     if status == 'canceled':

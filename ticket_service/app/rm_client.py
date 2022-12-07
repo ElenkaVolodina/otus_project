@@ -11,7 +11,13 @@ class PikaClient:
     def __init__(self, process_callable):
         self.publish_queue_name = os.getenv('PUBLISH_QUEUE', 'order_queue')
         self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=os.getenv('RABBIT_HOST', '127.0.0.1'))
+            pika.ConnectionParameters(
+                host=os.getenv('RABBIT_HOST', '127.0.0.1'),
+                credentials=pika.credentials.PlainCredentials(
+                    'admin', 'admin'
+                ),
+                heartbeat=0,
+            )
         )
         self.channel = self.connection.channel()
         self.publish_queue = self.channel.queue_declare(queue=self.publish_queue_name)
@@ -24,6 +30,8 @@ class PikaClient:
         connection = await connect_robust(
             host=os.getenv('RABBIT_HOST', '127.0.0.1'),
             port=5672,
+            login='admin',
+            password='admin',
             loop=loop,
         )
         channel = await connection.channel()
