@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "order_service"
+name = "ticket_service"
 version = "0.1.0"
 description = ""
 authors = ["Volodina Elena <elena.volodina@zyfra.com>"]

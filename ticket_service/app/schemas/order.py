@@ -2,10 +2,8 @@ from pydantic import BaseModel
 
 
 class OrderCreate(BaseModel):
-    address: str
-    count: int
-    hotel_id: int = None
-    flight_id: int = None
+    flight_id: int
+    order_id: int
     status: str = 'created'
 
 

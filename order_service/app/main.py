@@ -1,12 +1,26 @@
+import asyncio
+
 from fastapi import FastAPI, Request, HTTPException
 
 from app import order_utils
 from app.schemas.order import Order, OrderCreate
+from app.rm_client import PikaClient
+
+
+async def log_incoming_message(message: dict):
+    """Method to do something meaningful with the incoming message"""
+    order_id = message.get('order_id')
+    status = message.get('status')
+    if status == 'canceled':
+        await order_utils.update_order_status(order_id=order_id, status='canceled')
+
 
 app = FastAPI(
     title="OTUS HomeWork #6",
     version="1",
 )
+
+app.pika_client = PikaClient(log_incoming_message)
 
 
 @app.get("/")
@@ -31,4 +45,46 @@ async def create_user(request: Request, order: OrderCreate):
         return db_order
     db_order = await order_utils.create_order(order=order, user_id=user_id)
     await order_utils.create_idempotent_request(idempotent_key=idempotent_key, user_id=user_id, order_id=db_order['id'])
+    request.app.pika_client.send_message(
+        {
+            "order_id": db_order['id'],
+            "status": "created",
+            "idempotent_key": idempotent_key,
+            "hotel_id": order.hotel_id,
+            "flight_id": order.flight_id,
+            "user_id": user_id,
+        }
+    )
     return db_order
+
+
+@app.on_event('startup')
+async def startup():
+    loop = asyncio.get_running_loop()
+    task = loop.create_task(app.pika_client.consume(loop))
+    await task
+
+@app.get('/send-message')
+async def send_message(request: Request):
+    request.app.pika_client.send_message(
+        {
+            "order_id": 222,
+            "status": "created",
+            "idempotent_key": "idempotent_key_n",
+            "flight_id": 333,
+            "hotel_id": 444,
+            "user_id": 333
+        }
+    )
+    return {"status": "ok"}
+
+
+@app.get('/cancel')
+async def cancel(request: Request):
+    request.app.pika_client.send_message(
+        {
+            "order_id": 222,
+            "status": "canceled"
+        }
+    )
+    return {"status": "ok"}
