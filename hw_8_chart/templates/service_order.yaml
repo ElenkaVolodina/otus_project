@@ -4,7 +4,7 @@ metadata:
   name: order-service
   namespace: {{ .Values.namespace }}
   labels:
-      {{- include "hw_6_chart.orderSelectorLabels" . | nindent 6 }}
+      {{- include "hw_8_chart.orderSelectorLabels" . | nindent 6 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +12,4 @@ spec:
       port: {{ .Values.service.port }}
       targetPort: 8000
   selector:
-    {{- include "hw_6_chart.orderSelectorLabels" . | nindent 4 }}
+    {{- include "hw_8_chart.orderSelectorLabels" . | nindent 4 }}

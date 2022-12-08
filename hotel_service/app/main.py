@@ -27,9 +27,16 @@ async def log_incoming_message(message: dict):
         )
         db_order = await utils.create_order(order=order, user_id=user_id)
         await utils.create_idempotent_request(idempotent_key=idempotent_key, user_id=user_id, order_id=db_order['id'])
+
+        if int(hotel_id) == 11:
+            app.pika_client.send_message(
+                {
+                    "order_id": order_id,
+                    "status": "canceled"
+                }
+            )
     elif status == 'canceled':
         await utils.update_order_status(order_id=order_id, status='canceled')
-
 
 
 app = FastAPI(
@@ -56,19 +63,19 @@ async def get_order(order_id: int):
     return db_order
 
 
-@app.get('/send-message')
-async def send_message(request: Request):
-    request.app.pika_client.send_message(
-        {
-            "order_id": 111,
-            "status": "created",
-            "idempotent_key": "idempotent_key",
-            "flight_id": 222,
-            "hotel_id": 222,
-            "user_id": 333,
-        }
-    )
-    return {"status": "ok"}
+# @app.get('/send-message')
+# async def send_message(request: Request):
+#     request.app.pika_client.send_message(
+#         {
+#             "order_id": 111,
+#             "status": "created",
+#             "idempotent_key": "idempotent_key",
+#             "flight_id": 222,
+#             "hotel_id": 222,
+#             "user_id": 333,
+#         }
+#     )
+#     return {"status": "ok"}
 
 
 @app.on_event('startup')

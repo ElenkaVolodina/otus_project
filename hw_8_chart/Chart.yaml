@@ -1,6 +1,6 @@
 apiVersion: v2
-name: volodina-hw-6
-description: OTUS HomeWork 6 Volodina
+name: volodina-hw-8
+description: OTUS HomeWork 8 Volodina
 type: application
 version: 0.1.0
 appVersion: 0.1.0
@@ -11,4 +11,4 @@ dependencies:
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
     tags:
-      - volodina-hw-6-database
+      - volodina-hw-8-database

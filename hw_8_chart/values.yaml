@@ -1,0 +1,20 @@
+namespace: otus-hw-8-volodina
+replicaCount: 1
+image_user_service:
+  repository: elenkavolodina/otus_hw5:v10
+image_order_service:
+  repository: elenkavolodina/otus_hw8_order:v7
+image_hotel_service:
+  repository: elenkavolodina/otus_hw8_hotel:v2
+image_ticket_service:
+  repository: elenkavolodina/otus_hw8_ticket:v1
+service:
+  type: NodePort
+  port: 8000
+postgresql:
+  enabled: true
+  postgresqlUsername: root
+  postgresqlPassword: root
+  postgresqlDatabase: otus
+  service:
+    port: "5432"

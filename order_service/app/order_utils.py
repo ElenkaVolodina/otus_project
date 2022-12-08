@@ -50,7 +50,7 @@ async def get_order_by_id(order_id: int):
 async def update_order_status(order_id: int, status: str):
     async with SessionLocal() as session:
         async with session.begin():
-            q = update(OrderOrm).where((OrderOrm.order_id == order_id)).values(
+            q = update(OrderOrm).where((OrderOrm.id == order_id)).values(
                 status=status
             )
             await session.execute(q)

@@ -58,6 +58,14 @@ async def create_user(request: Request, order: OrderCreate):
     )
     return db_order
 
+@app.get("/order/{order_id}/", response_model=Order)
+async def get_order(order_id: int):
+    db_order = await order_utils.get_order_by_id(order_id=order_id)
+    if db_order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+    return db_order
+
+
 
 @app.on_event('startup')
 async def startup():
@@ -65,27 +73,27 @@ async def startup():
     task = loop.create_task(app.pika_client.consume(loop))
     await task
 
-@app.get('/send-message')
-async def send_message(request: Request):
-    request.app.pika_client.send_message(
-        {
-            "order_id": 222,
-            "status": "created",
-            "idempotent_key": "idempotent_key_n",
-            "flight_id": 333,
-            "hotel_id": 444,
-            "user_id": 333
-        }
-    )
-    return {"status": "ok"}
-
-
-@app.get('/cancel')
-async def cancel(request: Request):
-    request.app.pika_client.send_message(
-        {
-            "order_id": 222,
-            "status": "canceled"
-        }
-    )
-    return {"status": "ok"}
+# @app.get('/send-message')
+# async def send_message(request: Request):
+#     request.app.pika_client.send_message(
+#         {
+#             "order_id": 222,
+#             "status": "created",
+#             "idempotent_key": "idempotent_key_n",
+#             "flight_id": 333,
+#             "hotel_id": 444,
+#             "user_id": 333
+#         }
+#     )
+#     return {"status": "ok"}
+#
+#
+# @app.get('/cancel')
+# async def cancel(request: Request):
+#     request.app.pika_client.send_message(
+#         {
+#             "order_id": 222,
+#             "status": "canceled"
+#         }
+#     )
+#     return {"status": "ok"}
