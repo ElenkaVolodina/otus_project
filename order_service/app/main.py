@@ -12,8 +12,29 @@ async def log_incoming_message(message: dict):
     print(message)
     order_id = message.get('order_id')
     status = message.get('status')
-    if status == 'canceled':
+    if status in ('canceled', 'pyment_canceled'):
         await order_utils.update_order_status(order_id=order_id, status='canceled')
+    elif status == 'hotel_accept':
+        await order_utils.update_order(order_id=order_id, value={'check_hotel': True})
+    elif status == 'ticket_accept':
+        await order_utils.update_order(order_id=order_id, value={'check_ticket': True})
+    elif status == 'pyment_accept':
+        await order_utils.update_order(order_id=order_id, value={'check_pyment': True, 'status': 'pyment_accept'})
+
+    if status in ('hotel_accept', 'ticket_accept'):
+        db_order = await order_utils.get_order_by_id(order_id=order_id)
+        if db_order is not None:
+            if db_order.check_hotel and db_order.check_ticket:
+                app.pika_client.send_message(
+                    {
+                        "order_id": order_id,
+                        "user_id": db_order.user_id,
+                        "price": db_order.price,
+                        "status": "pyment_create"
+                    }
+                )
+
+    # Проверить статус и флаги
 
 
 app = FastAPI(
@@ -35,7 +56,7 @@ async def health():
 
 
 @app.post("/create_order", response_model=Order)
-async def create_user(request: Request, order: OrderCreate):
+async def create_order(request: Request, order: OrderCreate):
     idempotent_key = request.headers.get('Idempotency-Key')
     user_id = int(request.headers.get('x-user_id'))
     if not idempotent_key:
@@ -46,6 +67,7 @@ async def create_user(request: Request, order: OrderCreate):
         return db_order
     db_order = await order_utils.create_order(order=order, user_id=user_id)
     await order_utils.create_idempotent_request(idempotent_key=idempotent_key, user_id=user_id, order_id=db_order['id'])
+    await order_utils.update_order_status(order_id=db_order['id'], status='pending')
     request.app.pika_client.send_message(
         {
             "order_id": db_order['id'],
@@ -57,6 +79,7 @@ async def create_user(request: Request, order: OrderCreate):
         }
     )
     return db_order
+
 
 @app.get("/order/{order_id}/", response_model=Order)
 async def get_order(order_id: int):

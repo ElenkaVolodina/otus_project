@@ -1,3 +1,5 @@
+import asyncio
+
 import bcrypt
 from fastapi import FastAPI, Request, HTTPException, Response
 from fastapi.responses import RedirectResponse
@@ -7,11 +9,15 @@ from app import jwt, storage
 from app.forms.user import UserCreateForm
 from app.schemas.user import UserCreate, UserUpdate
 from app.utils import user as user_utils
+from app.rm_client import PikaClient
+
+
 
 app = FastAPI(
     title="OTUS HomeWork #5",
     version="1",
 )
+app.pika_client = PikaClient()
 
 jwt.setup_jwk(app)
 storage.setup_storage(app, app.private_key)
@@ -37,7 +43,13 @@ async def registration_form(request: Request):
             raise HTTPException(status_code=400, detail="Username already registered")
         hashed_password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt())
         user.password = hashed_password.decode('utf8')
-        await user_utils.create_user(user=user)
+        db_user = await user_utils.create_user(user=user)
+        app.pika_client.send_message(
+            {
+                "user_id": db_user.get('id'),
+                "status": "user_create"
+            }
+        )
         redirect_url = request.url_for('login_form')
         return RedirectResponse(redirect_url, status_code=302)
     return templates.TemplateResponse('registration.jinja2', context={'request': request})

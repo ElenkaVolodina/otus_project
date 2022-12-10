@@ -20,6 +20,13 @@ class PikaClient:
             )
         )
         self.channel = self.connection.channel()
+        self.channel.exchange_declare('my_orders')
+        self.channel.queue_declare(queue=os.getenv('CONSUME_QUEUE', 'main_order_queue'))
+        self.channel.queue_bind(
+            exchange='my_orders',
+            queue=os.getenv('CONSUME_QUEUE', 'main_order_queue'),
+            routing_key=os.getenv('PUBLISH_QUEUE', 'order_queue'),
+        )
         self.publish_queue = self.channel.queue_declare(queue=self.publish_queue_name)
         self.callback_queue = self.publish_queue.method.queue
         self.response = None

@@ -12,6 +12,7 @@ async def create_order(order: OrderCreate, user_id: int):
                 user_id=user_id,
                 address=order.address,
                 count=order.count,
+                price=order.price,
                 status=order.status,
             ).returning(OrderOrm.id)
             last_record_id = await session.execute(query)
@@ -52,5 +53,13 @@ async def update_order_status(order_id: int, status: str):
         async with session.begin():
             q = update(OrderOrm).where((OrderOrm.id == order_id)).values(
                 status=status
+            )
+            await session.execute(q)
+
+async def update_order(order_id: int, value: dict):
+    async with SessionLocal() as session:
+        async with session.begin():
+            q = update(OrderOrm).where((OrderOrm.id == order_id)).values(
+                **value
             )
             await session.execute(q)

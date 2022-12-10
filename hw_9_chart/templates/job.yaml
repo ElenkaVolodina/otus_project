@@ -1,0 +1,48 @@
+#apiVersion: batch/v1
+#kind: Job
+#metadata:
+#  namespace: {{ .Values.namespace }}
+#  name: {{ include "hw_9_chart.fullname" . }}
+#spec:
+#  template:
+#    metadata:
+#       name: {{ include "hw_9_chart.fullname" . }}
+#    spec:
+#      initContainers:
+#        - name: wait-for-db
+#          image: bitnami/kubectl
+#          args:
+#            - wait
+#            - pod/mysql
+#            - --for=condition=ready
+#            - --timeout=120s
+#      restartPolicy: Never
+#      containers:
+#        - name: {{ .Chart.Name }}
+#          image: {{ .Values.image_user_service.repository }}
+#          env:
+#            - name: DB_USER
+#              valueFrom:
+#                secretKeyRef:
+#                  name: volodina-hw9-secret
+#                  key: DB_USER
+#            - name: DB_PASSWORD
+#              valueFrom:
+#                secretKeyRef:
+#                  name: volodina-hw9-secret
+#                  key: DB_PASSWORD
+#            - name: DB_NAME
+#              valueFrom:
+#                secretKeyRef:
+#                  name: volodina-hw9-secret
+#                  key: DB_NAME
+#            - name: DB_HOST
+#              valueFrom:
+#                secretKeyRef:
+#                  name: volodina-hw9-secret
+#                  key: DB_HOST
+#          command:
+#            - sh
+#            - "-c"
+#            - cd app && alembic upgrade head
+#  backoffLimit: 0

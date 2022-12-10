@@ -1,0 +1,14 @@
+apiVersion: v2
+name: volodina-hw-9
+description: OTUS HomeWork 9 Volodina
+type: application
+version: 0.1.0
+appVersion: 0.1.0
+
+dependencies:
+  - name: postgresql
+    version: "10.16.2"
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+    tags:
+      - volodina-hw-9-database

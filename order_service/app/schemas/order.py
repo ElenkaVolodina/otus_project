@@ -6,6 +6,7 @@ class OrderCreate(BaseModel):
     count: int
     hotel_id: int = None
     flight_id: int = None
+    price: float
     status: str = 'created'
 
 

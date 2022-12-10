@@ -1,5 +1,5 @@
 import sqlalchemy
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Integer, String, Text, Boolean, Float
 
 from sqlalchemy.orm import declarative_base
 
@@ -16,6 +16,10 @@ class OrderOrm(Base):
     address = Column(Text)
     count = Column(Integer)
     status = Column(String)
+    price = Column(Float)
+    check_hotel = Column(Boolean, default=False)
+    check_ticket = Column(Boolean, default=False)
+    check_pyment = Column(Boolean, default=False)
 
 
 class IdempotentRequestOrm(Base):

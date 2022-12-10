@@ -8,6 +8,7 @@ from app.schemas.order import Order, OrderCreate
 
 async def log_incoming_message(message: dict):
     """Method to do something meaningful with the incoming message"""
+    print(message)
     order_id = message.get('order_id')
     status = message.get('status')
     if status == 'created':
@@ -27,9 +28,17 @@ async def log_incoming_message(message: dict):
         )
         db_order = await utils.create_order(order=order, user_id=user_id)
         await utils.create_idempotent_request(idempotent_key=idempotent_key, user_id=user_id, order_id=db_order['id'])
-    elif status == 'canceled':
-        await utils.update_order_status(order_id=order_id, status='canceled')
 
+        app.pika_client.send_message(
+            {
+                "order_id": order_id,
+                "status": "ticket_accept"
+            }
+        )
+        await utils.update_order_status(order_id=order_id, status='accept')
+
+    elif status in ('canceled', 'pyment_canceled'):
+        await utils.update_order_status(order_id=order_id, status='canceled')
 
 
 app = FastAPI(

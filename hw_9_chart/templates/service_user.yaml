@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hw_9_chart.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+      {{- include "hw_9_chart.selectorLabels" . | nindent 6 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: web
+      port: {{ .Values.service.port }}
+      targetPort: 8000
+  selector:
+    {{- include "hw_9_chart.selectorLabels" . | nindent 4 }}

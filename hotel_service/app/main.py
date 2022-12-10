@@ -35,8 +35,20 @@ async def log_incoming_message(message: dict):
                     "status": "canceled"
                 }
             )
-    elif status == 'canceled':
+        else:
+            app.pika_client.send_message(
+                {
+                    "order_id": order_id,
+                    "status": "hotel_accept"
+                }
+            )
+
+    elif status in ('canceled', 'pyment_canceled'):
         await utils.update_order_status(order_id=order_id, status='canceled')
+
+    elif status == 'hotel_accept':
+        await utils.update_order_status(order_id=order_id, status='accept')
+
 
 
 app = FastAPI(
