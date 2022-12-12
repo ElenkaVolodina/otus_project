@@ -34,6 +34,7 @@ target_metadata = [
     ticket_orders.metadata,
     notify_orders.metadata,
     pyment.metadata,
+    catalog.metadata,
 ]
 
 

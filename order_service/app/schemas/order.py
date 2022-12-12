@@ -1,12 +1,16 @@
+import datetime
+
 from pydantic import BaseModel
 
 
 class OrderCreate(BaseModel):
-    address: str
     count: int
-    hotel_id: int = None
-    flight_id: int = None
+    hotel_id: int
+    flight_id: int
+    country_id: int
     price: float
+    date_from: datetime.date
+    date_to: datetime.date
     status: str = 'created'
 
 

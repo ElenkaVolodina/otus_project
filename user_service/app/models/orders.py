@@ -1,5 +1,5 @@
 import sqlalchemy
-from sqlalchemy import Column, Integer, String, Text, Boolean, Float
+from sqlalchemy import Column, Integer, String, Date, Boolean, Float
 
 from sqlalchemy.orm import declarative_base
 
@@ -13,7 +13,11 @@ class OrderOrm(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer)
-    address = Column(Text)
+    hotel_id = Column(Integer)
+    flight_id = Column(Integer)
+    country_id = Column(Integer)
+    date_from = Column(Date)
+    date_to = Column(Date)
     count = Column(Integer)
     status = Column(String)
     price = Column(Float)
