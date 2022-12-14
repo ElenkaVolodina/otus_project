@@ -1,8 +1,8 @@
-from sqlalchemy import insert
+from sqlalchemy import insert, select
 
 from app.database import SessionLocal
 from app.models import CatalogOrm
-from app.schemas.catalog import CatalogCreate
+from app.schemas.catalog import CatalogCreate, FilterCatalog
 
 
 async def create_catalog(voucher: CatalogCreate):
@@ -18,3 +18,19 @@ async def create_catalog(voucher: CatalogCreate):
             ).returning(CatalogOrm.id)
             last_record_id = await session.execute(query)
             return {**voucher.dict(), "id": last_record_id.scalars().first()}
+
+
+async def filter_catalog(filters: FilterCatalog):
+    query_filters = tuple()
+    if filters.flight_id:
+        query_filters += (CatalogOrm.flight_id == filters.flight_id,)
+    if filters.country_id:
+        query_filters += (CatalogOrm.country_id == filters.country_id,)
+    if filters.hotel_id:
+        query_filters += (CatalogOrm.hotel_id == filters.hotel_id,)
+    async with SessionLocal() as session:
+        results = select(CatalogOrm).where(*query_filters)
+        result = await session.execute(results)
+    return result.scalars().all()
+
+

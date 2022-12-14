@@ -1,15 +1,16 @@
 import asyncio
 
 from fastapi import FastAPI, Request, HTTPException
+from pydantic.schema import List
 
 from app import utils
 from app.rm_client import PikaClient
-from app.schemas.catalog import Catalog, CatalogCreate
+from app.schemas.catalog import Catalog, CatalogCreate, FilterCatalog
+
 
 async def log_incoming_message(message: dict):
     """Method to do something meaningful with the incoming message"""
-    print(message)
-    await utils.create_catalog(**message)
+    await utils.create_catalog(CatalogCreate(**message))
 
 
 app = FastAPI(
@@ -31,16 +32,31 @@ async def health():
 
 @app.post("/create_voucher", response_model=Catalog)
 async def create_order(request: Request, catalog: CatalogCreate):
-    db_catalog = await utils.create_catalog(catalog=catalog)
+    db_catalog = await utils.create_catalog(catalog)
     return db_catalog
 
 
-# @app.get("/order/{order_id}/", response_model=Order)
-# async def get_order(order_id: int):
-#     db_order = await utils.get_order_by_id(order_id=order_id)
-#     if db_order is None:
-#         raise HTTPException(status_code=404, detail="Order not found")
-#     return db_order
+@app.get('/send-message')
+async def send_message(request: Request):
+    request.app.pika_client.send_message(
+        {
+            "date_from": "2023-01-31",
+            "date_to": "2023-02-10",
+            "flight_id": 123,
+            "hotel_id": 321,
+            "country_id": 3,
+            "price": 1234567,
+        }
+    )
+    return {"status": "ok"}
+
+
+
+@app.post("/search", response_model=List[Catalog])
+async def get_catalog(request: Request, catalog: FilterCatalog):
+    db_catalogs = await utils.filter_catalog(catalog)
+    return db_catalogs
+
 
 
 @app.on_event('startup')

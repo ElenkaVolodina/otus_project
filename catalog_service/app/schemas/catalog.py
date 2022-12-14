@@ -17,3 +17,12 @@ class Catalog(CatalogCreate):
 
     class Config:
         orm_mode = True
+
+
+class FilterCatalog(BaseModel):
+    flight_id: int | None
+    hotel_id: int | None
+    country_id: int  | None
+    date_from: datetime.date | None
+    date_to: datetime.date | None
+    price: float | None

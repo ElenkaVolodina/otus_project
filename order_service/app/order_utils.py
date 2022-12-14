@@ -10,14 +10,17 @@ async def create_order(order: OrderCreate, user_id: int):
         async with session.begin():
             query = insert(OrderOrm).values(
                 user_id=user_id,
-                address=order.address,
+                hotel_id=order.hotel_id,
+                flight_id=order.flight_id,
+                country_id=order.country_id,
+                date_from=order.date_from,
+                date_to=order.date_to,
                 count=order.count,
                 price=order.price,
                 status=order.status,
             ).returning(OrderOrm.id)
             last_record_id = await session.execute(query)
             return {**order.dict(), "id": last_record_id.scalars().first(), "user_id": user_id}
-
 
 async def create_idempotent_request(idempotent_key: str, user_id: int, order_id: int):
     async with SessionLocal() as session:
