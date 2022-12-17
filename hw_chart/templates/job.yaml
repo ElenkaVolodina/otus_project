@@ -2,11 +2,11 @@
 #kind: Job
 #metadata:
 #  namespace: {{ .Values.namespace }}
-#  name: {{ include "hw_9_chart.fullname" . }}
+#  name: {{ include "hw_chart.fullname" . }}
 #spec:
 #  template:
 #    metadata:
-#       name: {{ include "hw_9_chart.fullname" . }}
+#       name: {{ include "hw_chart.fullname" . }}
 #    spec:
 #      initContainers:
 #        - name: wait-for-db
@@ -24,22 +24,22 @@
 #            - name: DB_USER
 #              valueFrom:
 #                secretKeyRef:
-#                  name: volodina-hw9-secret
+#                  name: volodina-hw-secret
 #                  key: DB_USER
 #            - name: DB_PASSWORD
 #              valueFrom:
 #                secretKeyRef:
-#                  name: volodina-hw9-secret
+#                  name: volodina-hw-secret
 #                  key: DB_PASSWORD
 #            - name: DB_NAME
 #              valueFrom:
 #                secretKeyRef:
-#                  name: volodina-hw9-secret
+#                  name: volodina-hw-secret
 #                  key: DB_NAME
 #            - name: DB_HOST
 #              valueFrom:
 #                secretKeyRef:
-#                  name: volodina-hw9-secret
+#                  name: volodina-hw-secret
 #                  key: DB_HOST
 #          command:
 #            - sh

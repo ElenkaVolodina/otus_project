@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: {{ include "hw_9_chart.fullname" . }}
+  name: {{ include "hw_chart.fullname" . }}
   namespace: {{ .Values.namespace }}
 spec:
   endpoints:
@@ -10,4 +10,4 @@ spec:
       path: /metrics
   selector:
     matchLabels:
-      {{- include "hw_9_chart.selectorLabels" . | nindent 6 }}
+      {{- include "hw_chart.selectorLabels" . | nindent 6 }}

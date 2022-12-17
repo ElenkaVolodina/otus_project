@@ -287,7 +287,7 @@
 							"    pm.response.to.have.status(200);",
 							"    const responseJson = pm.response.json();",
 							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.expect(responseJson.address).to.eql(\"address\");",
+							"    pm.expect(responseJson.status).to.eql(\"created\");",
 							"    pm.collectionVariables.set(\"order_id\", responseJson[\"id\"])",
 							"});"
 						],
@@ -316,7 +316,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"count\": 1,\n    \"address\": \"address\",\n    \"hotel_id\": 1,\n    \"flight_id\": 2,\n    \"price\": 100000\n}"
+					"raw": "{\n    \"count\": 1,\n    \"hotel_id\": 1,\n    \"flight_id\": 2,\n    \"country_id\": 1,\n    \"date_from\": \"2023-01-31\",\n    \"date_to\": \"2023-02-10\",\n    \"price\": 100000\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/create_order",
@@ -341,7 +341,7 @@
 							"    pm.response.to.have.status(200);",
 							"    const responseJson = pm.response.json();",
 							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.expect(responseJson.status).to.eql(\"payment_accept\");",
+							"    pm.expect(responseJson.status).to.eql(\"pyment_accept\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -464,11 +464,7 @@
 						"exec": [
 							"pm.test(\"Check order 1 status\", function () {",
 							"    pm.response.to.have.status(200);",
-							"    // const responseJson = pm.response.json();",
 							"    console.log(\"Response body: \", pm.response.json())",
-							"    // pm.expect(pm.response).to.equal(2);",
-							"    // pm.expect(responseJson[0].subject).to.equal(\"Создан новый заказ!\");",
-							"    // pm.expect(responseJson[1].subject).to.equal(\"Ваш заказ оплачен!\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -549,7 +545,7 @@
 							"pm.test(\"Create order 2 status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"    const responseJson = pm.response.json();",
-							"    pm.expect(responseJson.address).to.eql(\"address_new\");",
+							"    pm.expect(responseJson.status).to.eql(\"created\");",
 							"    var order_id = pm.collectionVariables.get(\"order_id\");",
 							"    pm.expect(responseJson.id).not.eql(order_id);",
 							"    console.log(\"Response body: \", pm.response.json())",
@@ -581,7 +577,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"count\": 10,\n    \"address\": \"address_new\",\n    \"hotel_id\": 2,\n    \"flight_id\": 4,\n    \"price\": 150000\n}"
+					"raw": "{\n    \"count\": 2,\n    \"hotel_id\": 21,\n    \"flight_id\": 12,\n    \"country_id\": 1,\n    \"date_from\": \"2023-07-31\",\n    \"date_to\": \"2023-08-10\",\n    \"price\": 250000\n}"
 				},
 				"url": {
 					"raw": "{{baseUrl}}/create_order",
@@ -729,11 +725,7 @@
 						"exec": [
 							"pm.test(\"Check order 2 status\", function () {",
 							"    pm.response.to.have.status(200);",
-							"    const responseJson = pm.response.json();",
 							"    console.log(\"Response body: \", pm.response.json())",
-							"    // pm.expect(responseJson).to.equal(2);",
-							"    // pm.expect(responseJson[0].subject).to.equal(\"Создан новый заказ!\");",
-							"    // pm.expect(responseJson[1].subject).to.equal(\"Не удачная оплата заказа!\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -878,7 +870,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "arch.homework",
+			"value": "poleteli.com",
 			"type": "string"
 		},
 		{

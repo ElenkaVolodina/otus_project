@@ -4,19 +4,19 @@ metadata:
   name: users
   namespace: {{ .Values.namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/auth-url: http://arch.homework/auth
+    nginx.ingress.kubernetes.io/auth-url: http://poleteli.com/auth
     nginx.ingress.kubernetes.io/auth-response-headers: x-user_id
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-    - host: arch.homework
+    - host: poleteli.com
       http:
         paths:
           - path: /user
             pathType: Prefix
             backend:
               service:
-                name: {{ include "hw_9_chart.fullname" . }}
+                name: {{ include "hw_chart.fullname" . }}
                 port:
                   number: 8000
 ---
@@ -29,14 +29,14 @@ metadata:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-    - host: arch.homework
+    - host: poleteli.com
       http:
         paths:
           - path: /login
             pathType: Prefix
             backend:
               service:
-                name: {{ include "hw_9_chart.fullname" . }}
+                name: {{ include "hw_chart.fullname" . }}
                 port:
                   number: 8000
 
@@ -44,7 +44,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "hw_9_chart.fullname" . }}
+                name: {{ include "hw_chart.fullname" . }}
                 port:
                   number: 8000
 
@@ -52,7 +52,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "hw_9_chart.fullname" . }}
+                name: {{ include "hw_chart.fullname" . }}
                 port:
                   number: 8000
 
@@ -60,7 +60,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ include "hw_9_chart.fullname" . }}
+                name: {{ include "hw_chart.fullname" . }}
                 port:
                   number: 8000
 ---
@@ -70,12 +70,12 @@ metadata:
   name: orders
   namespace: {{ .Values.namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/auth-url: http://arch.homework/auth
+    nginx.ingress.kubernetes.io/auth-url: http://poleteli.com/auth
     nginx.ingress.kubernetes.io/auth-response-headers: x-user_id
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-    - host: arch.homework
+    - host: poleteli.com
       http:
         paths:
           - path: /create_order
@@ -99,13 +99,13 @@ metadata:
   name: hotel
   namespace: {{ .Values.namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/auth-url: http://arch.homework/auth
+    nginx.ingress.kubernetes.io/auth-url: http://poleteli.com/auth
     nginx.ingress.kubernetes.io/auth-response-headers: x-user_id
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-    - host: arch.homework
+    - host: poleteli.com
       http:
         paths:
           - path: /hotel/(.*)
@@ -122,13 +122,13 @@ metadata:
   name: ticket
   namespace: {{ .Values.namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/auth-url: http://arch.homework/auth
+    nginx.ingress.kubernetes.io/auth-url: http://poleteli.com/auth
     nginx.ingress.kubernetes.io/auth-response-headers: x-user_id
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-    - host: arch.homework
+    - host: poleteli.com
       http:
         paths:
           - path: /ticket/(.*)
@@ -145,16 +145,16 @@ metadata:
   name: pyment
   namespace: {{ .Values.namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/auth-url: http://arch.homework/auth
+    nginx.ingress.kubernetes.io/auth-url: http://poleteli.com/auth
     nginx.ingress.kubernetes.io/auth-response-headers: x-user_id
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-    - host: arch.homework
+    - host: poleteli.com
       http:
         paths:
-          - path: /pyment/(.*)
+          - path: /payment/(.*)
             pathType: Prefix
             backend:
               service:
@@ -169,13 +169,13 @@ metadata:
   name: notify
   namespace: {{ .Values.namespace }}
   annotations:
-    nginx.ingress.kubernetes.io/auth-url: http://arch.homework/auth
+    nginx.ingress.kubernetes.io/auth-url: http://poleteli.com/auth
     nginx.ingress.kubernetes.io/auth-response-headers: x-user_id
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-    - host: arch.homework
+    - host: poleteli.com
       http:
         paths:
           - path: /notify/(.*)
@@ -183,5 +183,28 @@ spec:
             backend:
               service:
                 name: notify-service
+                port:
+                  number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: catalog
+  namespace: {{ .Values.namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: http://poleteli.com/auth
+    nginx.ingress.kubernetes.io/auth-response-headers: x-user_id
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+    - host: poleteli.com
+      http:
+        paths:
+          - path: /catalog/(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: catalog-service
                 port:
                   number: 8000

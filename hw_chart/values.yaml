@@ -1,17 +1,19 @@
-namespace: otus-hw-9-volodina
+namespace: otus-hw-volodina
 replicaCount: 1
 image_user_service:
-  repository: elenkavolodina/otus_hw9:v1
+  repository: elenkavolodina/otus_hw9:v2
 image_order_service:
-  repository: elenkavolodina/otus_hw9_order:v2
+  repository: elenkavolodina/otus_hw9_order:v3
 image_hotel_service:
   repository: elenkavolodina/otus_hw9_hotel:v1
 image_ticket_service:
   repository: elenkavolodina/otus_hw9_ticket:v2
 image_notify_service:
   repository: elenkavolodina/otus_hw9_notify:v2
-image_pyment_service:
+image_payment_service:
   repository: elenkavolodina/otus_hw9_pyment:v3
+image_catalog_service:
+  repository: elenkavolodina/otus_hw_catalog:v2
 service:
   type: NodePort
   port: 8000

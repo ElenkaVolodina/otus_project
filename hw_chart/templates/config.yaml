@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: volodina-hw9
+  name: volodina-hw
   namespace: {{ .Values.namespace }}
 
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: volodina-hw9-secret
+  name: volodina-hw-secret
   namespace: {{ .Values.namespace }}
 type: Opaque
 data:

@@ -1,13 +1,13 @@
 {
 	"info": {
-		"_postman_id": "ba091e23-ec3f-4a7e-b2b8-aaa67a470951",
-		"name": "otus_hw_9",
+		"_postman_id": "8557df0a-0310-461a-be3a-a176f8cc8a3e",
+		"name": "otus_hw_catalog",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21989090"
 	},
 	"item": [
 		{
-			"name": "Registration user_1",
+			"name": "Registration user",
 			"event": [
 				{
 					"listen": "test",
@@ -89,7 +89,7 @@
 			"response": []
 		},
 		{
-			"name": "Login user_1",
+			"name": "Login user",
 			"event": [
 				{
 					"listen": "test",
@@ -141,20 +141,15 @@
 			"response": []
 		},
 		{
-			"name": "Create order 1",
+			"name": "Create catalog",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Create order 1 status code is 200\", function () {",
+							"pm.test(\"Create new item status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
-							"    const responseJson = pm.response.json();",
-							"    // pm.test(pm.response.json())",
-							"    // console.log(pm.response.json())",
 							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.expect(responseJson.address).to.eql(\"address\");",
-							"    pm.collectionVariables.set(\"order_id\", responseJson[\"id\"])",
 							"});"
 						],
 						"type": "text/javascript"
@@ -164,11 +159,6 @@
 			"request": {
 				"method": "POST",
 				"header": [
-					{
-						"key": "Idempotency-Key",
-						"value": "657567567567567567657",
-						"type": "text"
-					},
 					{
 						"key": "x-user_id",
 						"value": "1",
@@ -182,160 +172,32 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"count\": 1,\n    \"address\": \"address\",\n    \"hotel_id\": 1,\n    \"flight_id\": 2\n}"
+					"raw": "{\n    \"count\": 2,\n    \"hotel_id\": 321,\n    \"flight_id\": 12,\n    \"country_id\": 1,\n    \"date_from\": \"2023-07-31\",\n    \"date_to\": \"2023-08-10\",\n    \"price\": 250000\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/create_order",
+					"raw": "{{baseUrl}}/catalog/create_voucher",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"create_order"
+						"catalog",
+						"create_voucher"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Check order 1 in Order Service",
+			"name": "Find",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Check order 1 status\", function () {",
+							"pm.test(\"Find voucher\", function () {",
 							"    pm.response.to.have.status(200);",
 							"    const responseJson = pm.response.json();",
 							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.expect(responseJson.status).to.eql(\"created\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-user_id",
-						"value": "1",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/order/{{order_id}}/",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"order",
-						"{{order_id}}",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Check order 1 in Hotel Service Copy",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check order 1 status\", function () {",
-							"    pm.response.to.have.status(200);",
-							"    const responseJson = pm.response.json();",
-							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.expect(responseJson.status).to.eql(\"pending\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-user_id",
-						"value": "1",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/hotel/order/{{order_id}}/",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"hotel",
-						"order",
-						"{{order_id}}",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Check order 1 in Ticket Service Copy",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check order 1 status\", function () {",
-							"    pm.response.to.have.status(200);",
-							"    const responseJson = pm.response.json();",
-							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.expect(responseJson.status).to.eql(\"pending\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-user_id",
-						"value": "1",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/ticket/order/{{order_id}}/",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"ticket",
-						"order",
-						"{{order_id}}",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create order 2",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Create order 2 status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"    const responseJson = pm.response.json();",
-							"    pm.expect(responseJson.address).to.eql(\"address_new\");",
-							"    var order_id = pm.collectionVariables.get(\"order_id\");",
-							"    pm.expect(responseJson.id).not.eql(order_id);",
-							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.collectionVariables.set(\"order_id\", responseJson[\"id\"])",
 							"});"
 						],
 						"type": "text/javascript"
@@ -345,11 +207,6 @@
 			"request": {
 				"method": "POST",
 				"header": [
-					{
-						"key": "Idempotency-Key",
-						"value": "hrytrytyrtytry",
-						"type": "text"
-					},
 					{
 						"key": "x-user_id",
 						"value": "1",
@@ -363,32 +220,31 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"count\": 10,\n    \"address\": \"address_new\",\n    \"hotel_id\": 11,\n    \"flight_id\": 4\n}"
+					"raw": "{\n    \"hotel_id\": 321\n}"
 				},
 				"url": {
-					"raw": "{{baseUrl}}/create_order",
+					"raw": "{{baseUrl}}/catalog/search",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"create_order"
+						"catalog",
+						"search"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Check order 2 in Order Service",
+			"name": "Create catalog from queue",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Check order 2 status\", function () {",
+							"pm.test(\"Create new item from queue status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
-							"    const responseJson = pm.response.json();",
 							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.expect(responseJson.status).to.eql(\"canceled\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -397,39 +253,31 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "x-user_id",
-						"value": "1",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/order/{{order_id}}/",
+					"raw": "{{baseUrl}}/catalog/send-message",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"order",
-						"{{order_id}}",
-						""
+						"catalog",
+						"send-message"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Check order 2 in Hotel Service",
+			"name": "Find",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Check order 2 status\", function () {",
+							"pm.test(\"Find voucher\", function () {",
 							"    pm.response.to.have.status(200);",
 							"    const responseJson = pm.response.json();",
 							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.expect(responseJson.status).to.eql(\"canceled\");",
 							"});"
 						],
 						"type": "text/javascript"
@@ -437,73 +285,38 @@
 				}
 			],
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [
 					{
 						"key": "x-user_id",
 						"value": "1",
 						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
 					}
 				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"hotel_id\": 321\n}"
+				},
 				"url": {
-					"raw": "{{baseUrl}}/hotel/order/{{order_id}}/",
+					"raw": "{{baseUrl}}/catalog/search",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"hotel",
-						"order",
-						"{{order_id}}",
-						""
+						"catalog",
+						"search"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Check order 2 in Ticket Service",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Check order 1 status\", function () {",
-							"    pm.response.to.have.status(200);",
-							"    const responseJson = pm.response.json();",
-							"    console.log(\"Response body: \", pm.response.json())",
-							"    pm.expect(responseJson.status).to.eql(\"canceled\");",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-user_id",
-						"value": "1",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "{{baseUrl}}/ticket/order/{{order_id}}/",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"ticket",
-						"order",
-						"{{order_id}}",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete user_1",
+			"name": "Delete user",
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -521,7 +334,7 @@
 			"response": []
 		},
 		{
-			"name": "Logout user_1",
+			"name": "Logout user",
 			"event": [
 				{
 					"listen": "test",
@@ -576,12 +389,8 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "arch.homework",
+			"value": "poleteli.com",
 			"type": "string"
-		},
-		{
-			"key": "order_id",
-			"value": ""
 		}
 	]
 }
